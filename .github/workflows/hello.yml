@@ -1,0 +1,23 @@
+name: Hello World
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout kodu
+        uses: actions/checkout@v4
+
+      - name: Przywitaj się
+        run: echo "Hej! GitHub Actions działa!"
+
+      - name: Pokaż datę
+        run: date
+
+      - name: Pokaż strukturę plików
+        run: ls -la
