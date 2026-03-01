@@ -1,0 +1,29 @@
+  name: Python Tests & Linting                                                                                                                                                                                             
+                                                                                                                                                                                                                           
+  on:                                                                                                                                                                                                                      
+    push:                                                                                                                                                                                                                  
+      branches: [ master ]                                                                                                                                                                                                 
+    pull_request: 
+      branches: [ master ]
+
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout kodu
+          uses: actions/checkout@v4
+
+        - name: Ustaw Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.12'
+
+        - name: Zainstaluj zależności
+          run: |
+            pip install pytest flake8
+
+        - name: Linting (flake8)
+          run: flake8 kalkulator.py test_kalkulator.py
+
+        - name: Testy (pytest)
+          run: pytest test_kalkulator.py -v
