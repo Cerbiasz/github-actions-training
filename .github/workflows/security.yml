@@ -1,0 +1,50 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 8 * * 1'
+
+jobs:
+  bandit-pip-audit:
+    name: Bandit & pip-audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout kodu
+        uses: actions/checkout@v4
+
+      - name: Ustaw Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Zainstaluj narzędzia
+        run: pip install bandit pip-audit
+
+      - name: Bandit - skan kodu
+        run: bandit -r . -x ./.github
+
+      - name: pip-audit - skan zależności
+        run: pip-audit
+
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout kodu
+        uses: actions/checkout@v4
+
+      - name: Inicjalizuj CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      - name: Uruchom analizę CodeQL
+        uses: github/codeql-action/analyze@v3
